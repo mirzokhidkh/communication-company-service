@@ -15,8 +15,8 @@ public class RegisterDto {
     private String username;
     @NotNull
     private String password;
-    @NotNull
+    
     private String passportId;
     @NotNull
-    private Set<Integer> roles;
+    private Set<Integer> roleIds;
 }

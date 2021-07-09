@@ -2,30 +2,51 @@ package uz.mk.communicationcompanyservice.service;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Lazy;
+import org.springframework.security.authentication.AuthenticationManager;
+import org.springframework.security.authentication.BadCredentialsException;
+import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
+import org.springframework.security.core.Authentication;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
+import uz.mk.communicationcompanyservice.entity.Role;
+import uz.mk.communicationcompanyservice.entity.Turniket;
 import uz.mk.communicationcompanyservice.entity.User;
+import uz.mk.communicationcompanyservice.entity.enums.RoleName;
 import uz.mk.communicationcompanyservice.payload.ApiResponse;
 import uz.mk.communicationcompanyservice.payload.LoginDto;
 import uz.mk.communicationcompanyservice.payload.RegisterDto;
+import uz.mk.communicationcompanyservice.repository.RoleRepository;
 import uz.mk.communicationcompanyservice.repository.UserRepository;
+import uz.mk.communicationcompanyservice.security.JwtProvider;
+import uz.mk.communicationcompanyservice.utils.CommonUtils;
 
+import java.util.Map;
 import java.util.Optional;
 import java.util.Set;
 
 @Service
 public class AuthService implements UserDetailsService {
 
+    final UserRepository userRepository;
+
+    final RoleRepository roleRepository;
+
+    final PasswordEncoder passwordEncoder;
+
+    final AuthenticationManager authenticationManager;
+
+    final JwtProvider jwtProvider;
+
     @Autowired
-    UserRepository userRepository;
-
-    private final PasswordEncoder passwordEncoder;
-
-    public AuthService(@Lazy PasswordEncoder passwordEncoder) {
+    public AuthService(@Lazy PasswordEncoder passwordEncoder, UserRepository userRepository, AuthenticationManager authenticationManager, JwtProvider jwtProvider, RoleRepository roleRepository) {
         this.passwordEncoder = passwordEncoder;
+        this.userRepository = userRepository;
+        this.authenticationManager = authenticationManager;
+        this.jwtProvider = jwtProvider;
+        this.roleRepository = roleRepository;
     }
 
     public ApiResponse register(RegisterDto registerDto) {
@@ -35,6 +56,20 @@ public class AuthService implements UserDetailsService {
             return new ApiResponse("User with such a username already exists", false);
         }
 
+        Map<String, Object> contextHolder = CommonUtils.getPrincipalAndRoleFromSecurityContextHolder();
+        User principalUser = (User) contextHolder.get("principalUser");
+        Set<Role> principalUserRoles = (Set<Role>) contextHolder.get("principalUserRoles");
+
+        Set<Integer> roleIds = registerDto.getRoleIds();
+        Set<Role> roleSet = roleRepository.findAllByIdIn(roleIds);
+
+        boolean isDirectorAuthority = CommonUtils.isExistsAuthority(principalUserRoles, RoleName.ROLE_DIRECTOR);
+        boolean isManagerAuthority = CommonUtils.isExistsAuthority(principalUserRoles, RoleName.ROLE_BRANCH_MANAGER) &&
+                CommonUtils.isExistsAuthority(roleSet, RoleName.ROLE_STAFF);
+
+        if (!(isDirectorAuthority || isManagerAuthority)) {
+            return new ApiResponse("You don't have the authority to add staff", false);
+        }
 
         User user = new User();
         user.setFirstname(registerDto.getFirstname());
@@ -43,19 +78,37 @@ public class AuthService implements UserDetailsService {
         user.setEnabled(true);
         user.setPassword(passwordEncoder.encode(registerDto.getPassword()));
         user.setPassportId(registerDto.getPassportId());
-
-
         user.setStatus(true);
+        user.setRole(roleSet);
 
-        Set<Integer> roles = registerDto.getRoles();
+        boolean existRoleStaff = CommonUtils.isExistsAuthority(roleSet, RoleName.ROLE_STAFF);
+
+        if (existRoleStaff) {
+            Turniket turniket = new Turniket();
+            turniket.setStaff(user);
+            turniket.setStatus(true);
+
+            user.setTurniket(turniket);
+        }
+
 
         User savedUser = userRepository.save(user);
-        return new ApiResponse("Successfully registered", true);
+        return new ApiResponse("Successfully registered", true, savedUser);
     }
 
     public ApiResponse login(LoginDto loginDto) {
+        try {
+            Authentication authentication = authenticationManager.authenticate(new UsernamePasswordAuthenticationToken(
+                    loginDto.getUsername(),
+                    loginDto.getPassword()
+            ));
+            User user = (User) authentication.getPrincipal();
+            String token = jwtProvider.generateToken(loginDto.getUsername(), user.getRole());
+            return new ApiResponse("Token", true, token);
 
-        return new ApiResponse("User entered", true);
+        } catch (BadCredentialsException badCredentialsException) {
+            return new ApiResponse("Username or password incorrect", true);
+        }
 
     }
 

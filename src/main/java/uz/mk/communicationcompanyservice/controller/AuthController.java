@@ -8,11 +8,12 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 import uz.mk.communicationcompanyservice.payload.ApiResponse;
+import uz.mk.communicationcompanyservice.payload.LoginDto;
 import uz.mk.communicationcompanyservice.payload.RegisterDto;
 import uz.mk.communicationcompanyservice.service.AuthService;
 
 @RestController
-@RequestMapping("/auth")
+@RequestMapping("/api/auth")
 public class AuthController {
 
     @Autowired
@@ -24,5 +25,11 @@ public class AuthController {
         return ResponseEntity.status(response.isStatus() ? 201 : 409).body(response);
     }
 
+
+    @PostMapping("/login")
+    public HttpEntity<?> login(@RequestBody LoginDto loginDto) {
+        ApiResponse response = authService.login(loginDto);
+        return ResponseEntity.status(response.isStatus() ? 200 : 401).body(response);
+    }
 
 }

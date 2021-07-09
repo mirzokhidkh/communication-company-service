@@ -18,17 +18,17 @@ public class CommonUtils {
         Map<String, Object> map = new HashMap<String, Object>();
 
         User principalUser = null;
-        RoleName principalUserRole = null;
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
         principalUser = (User) authentication.getPrincipal();
 
-        Set<Role> userPrincipalRoles = principalUser.getRole();
-        for (Role role : userPrincipalRoles) {
-            principalUserRole = role.getRoleName();
-        }
+        Set<Role> principalUserRoles = principalUser.getRole();
         map.put("principalUser", principalUser);
-        map.put("principalUserRole", principalUserRole);
+        map.put("principalUserRoles", principalUserRoles);
         return map;
+    }
+
+    public static boolean isExistsAuthority(Set<Role> roles, RoleName roleName) {
+        return roles.stream().anyMatch(role -> role.getRoleName().equals(roleName));
     }
 
 

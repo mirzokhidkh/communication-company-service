@@ -8,5 +8,4 @@ import uz.mk.communicationcompanyservice.entity.Tariff;
 
 @RepositoryRestResource(path = "tariff",collectionResourceRel = "list")
 public interface TariffRepository extends JpaRepository<Tariff, Integer> {
-
 }

@@ -6,9 +6,14 @@ import uz.mk.communicationcompanyservice.entity.Role;
 import uz.mk.communicationcompanyservice.entity.User;
 import uz.mk.communicationcompanyservice.entity.enums.RoleName;
 
+import java.util.Collection;
+import java.util.Set;
 import java.util.UUID;
 
 @Repository
 public interface RoleRepository extends JpaRepository<Role, Integer> {
     Role findByRoleName(RoleName roleName);
+
+
+    Set<Role> findAllByIdIn(Collection<Integer> id);
 }

@@ -1,5 +1,6 @@
 insert into role (role_name)
 values ('ROLE_DIRECTOR'),
+       ('ROLE_BRANCH_DIRECTOR'),
        ('ROLE_BRANCH_MANAGER'),
        ('ROLE_NUMBERS_MANAGER'),
        ('ROLE_PERSONNEL_MANAGER'),
@@ -22,3 +23,18 @@ insert into service_type(service_type_name)
 values ('MB'),
        ('SMS'),
        ('MINUTE');
+
+insert into region(name)
+values ('Tashkent'),
+       ('Jizzakh'),
+       ('Sirdaryo'),
+       ('Samarqand'),
+       ('Surxondaryo'),
+       ('Qashqadaryo'),
+       ('Andijan'),
+       ('Bukhara'),
+       ('Fergana'),
+       ('Namangan'),
+       ('Navoiy'),
+       ('Karakalpakstan'),
+       ('Xorazm');
