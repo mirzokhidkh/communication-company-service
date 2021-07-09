@@ -3,10 +3,15 @@ package uz.mk.communicationcompanyservice.entity;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import org.hibernate.annotations.CreationTimestamp;
+import org.hibernate.annotations.UpdateTimestamp;
+import org.springframework.data.annotation.CreatedBy;
+import org.springframework.data.annotation.LastModifiedBy;
 
 import javax.persistence.*;
-import java.sql.Date;
+import java.sql.Timestamp;
 import java.util.List;
+import java.util.UUID;
 
 @Data
 @AllArgsConstructor
@@ -23,6 +28,10 @@ public class Service {
     @Column(nullable = false)
     private String value;
 
+    @Column(nullable = false,columnDefinition = "TEXT")
+    private String description;
+
+
     private Double price;
 
     @ManyToOne
@@ -30,4 +39,18 @@ public class Service {
 
     @ManyToMany
     private List<PurchaseType> purchaseTypes;
+
+    @CreatedBy
+    private UUID createdBy;
+
+    @LastModifiedBy
+    private UUID updatedBy;
+
+    @Column(updatable = false,nullable = false)
+    @CreationTimestamp
+    private Timestamp createdAt;
+
+    @UpdateTimestamp
+    private Timestamp updatedAt;
+
 }

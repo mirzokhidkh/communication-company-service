@@ -15,4 +15,6 @@ public class PurchaseType {
 
     @Enumerated(EnumType.STRING)
     private PurchaseTypeName purchaseTypeName;
+
+    private Integer durationDays;
 }

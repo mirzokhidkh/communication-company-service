@@ -39,6 +39,7 @@ public class DataLoader implements CommandLineRunner {
                     );
             Role director = roleRepository.findByRoleName(RoleName.ROLE_DIRECTOR);
             user.setRole(Collections.singleton(director));
+            user.setStatus(true);
             user.setEnabled(true);
             userRepository.save(user);
         }

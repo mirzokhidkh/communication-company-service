@@ -1,6 +1,7 @@
 package uz.mk.communicationcompanyservice.service;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.annotation.Lazy;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
@@ -21,8 +22,11 @@ public class AuthService implements UserDetailsService {
     @Autowired
     UserRepository userRepository;
 
-    @Autowired
-    PasswordEncoder passwordEncoder;
+    private final PasswordEncoder passwordEncoder;
+
+    public AuthService(@Lazy PasswordEncoder passwordEncoder) {
+        this.passwordEncoder = passwordEncoder;
+    }
 
     public ApiResponse register(RegisterDto registerDto) {
 
@@ -56,12 +60,12 @@ public class AuthService implements UserDetailsService {
     }
 
 
-        @Override
+    @Override
     public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
-            Optional<User> optionalUser = userRepository.findByUsername(username);
-            if (optionalUser.isPresent()) {
-                return optionalUser.get();
-            }
-            throw new UsernameNotFoundException(username+" not found");
+        Optional<User> optionalUser = userRepository.findByUsername(username);
+        if (optionalUser.isPresent()) {
+            return optionalUser.get();
+        }
+        throw new UsernameNotFoundException(username + " not found");
     }
 }

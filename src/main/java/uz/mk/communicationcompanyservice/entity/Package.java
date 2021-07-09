@@ -3,9 +3,12 @@ package uz.mk.communicationcompanyservice.entity;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import org.springframework.data.annotation.CreatedBy;
+import org.springframework.data.annotation.LastModifiedBy;
 
 import javax.persistence.*;
 import java.sql.Date;
+import java.util.UUID;
 
 @Data
 @AllArgsConstructor
@@ -22,6 +25,9 @@ public class Package {
     @Column(nullable = false)
     private String value;
 
+    @Column(nullable = false,columnDefinition = "TEXT")
+    private String description;
+
     private Double price;
 
     private Date validityPeriod;
@@ -29,4 +35,9 @@ public class Package {
     @ManyToOne
     private ServiceType serviceType;
 
+    @CreatedBy
+    private UUID createdBy;
+
+    @LastModifiedBy
+    private UUID updatedBy;
 }

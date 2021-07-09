@@ -3,11 +3,13 @@ package uz.mk.communicationcompanyservice.entity;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import org.hibernate.annotations.CreationTimestamp;
+import org.hibernate.annotations.UpdateTimestamp;
+import org.springframework.data.annotation.CreatedBy;
+import org.springframework.data.annotation.LastModifiedBy;
 
-import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.Id;
-import javax.persistence.OneToOne;
+import javax.persistence.*;
+import java.sql.Timestamp;
 import java.util.UUID;
 
 @Data
@@ -23,4 +25,17 @@ public class Turniket {
     private User staff;
 
     private boolean status;
+
+    @CreatedBy
+    private UUID createdBy;
+
+    @LastModifiedBy
+    private UUID updatedBy;
+
+    @Column(updatable = false,nullable = false)
+    @CreationTimestamp
+    private Timestamp createdAt;
+
+    @UpdateTimestamp
+    private Timestamp updatedAt;
 }

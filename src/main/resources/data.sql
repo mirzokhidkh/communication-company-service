@@ -19,5 +19,6 @@ values ('DAILY'),
        ('MONTHLY');
 
 insert into service_type(service_type_name)
-values ('WEATHER_REPORT'),
-       ('GOODok');
+values ('MB'),
+       ('SMS'),
+       ('MINUTE');

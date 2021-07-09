@@ -3,9 +3,12 @@ package uz.mk.communicationcompanyservice.entity;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import org.hibernate.annotations.CreationTimestamp;
+import org.hibernate.annotations.UpdateTimestamp;
 
 import javax.persistence.*;
 import java.sql.Date;
+import java.sql.Timestamp;
 import java.util.UUID;
 
 @Data
@@ -20,5 +23,7 @@ public class Detail {
     @Column(nullable = false)
     private String name;
 
-    private Date date;
+    @Column(updatable = false,nullable = false)
+    @CreationTimestamp
+    private Timestamp date;
 }

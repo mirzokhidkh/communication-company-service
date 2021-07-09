@@ -3,10 +3,13 @@ package uz.mk.communicationcompanyservice.entity;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import org.hibernate.annotations.CreationTimestamp;
+import org.hibernate.annotations.UpdateTimestamp;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 
 import javax.persistence.*;
+import java.sql.Timestamp;
 import java.util.Collection;
 import java.util.List;
 import java.util.Set;
@@ -53,6 +56,14 @@ public class User implements UserDetails {
         this.username = username;
         this.password = password;
     }
+
+
+    @Column(updatable = false,nullable = false)
+    @CreationTimestamp
+    private Timestamp createdAt;
+
+    @UpdateTimestamp
+    private Timestamp updatedAt;
 
     private boolean accountNonExpired = true;
     private boolean accountNonLocked = true;

@@ -4,10 +4,16 @@ import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import org.hibernate.annotations.CreationTimestamp;
+import org.hibernate.annotations.UpdateTimestamp;
+import org.springframework.data.annotation.CreatedBy;
+import org.springframework.data.annotation.LastModifiedBy;
 
 import javax.persistence.*;
 import java.sql.Date;
+import java.sql.Timestamp;
 import java.util.List;
+import java.util.UUID;
 
 @Data
 @AllArgsConstructor
@@ -43,5 +49,18 @@ public class Tariff {
     @JsonIgnore
     @OneToMany(mappedBy = "tariff",cascade = CascadeType.ALL)
     private List<Simcard> simcard;
+
+    @CreatedBy
+    private UUID createdBy;
+
+    @LastModifiedBy
+    private UUID updatedBy;
+
+    @Column(updatable = false,nullable = false)
+    @CreationTimestamp
+    private Timestamp createdAt;
+
+    @UpdateTimestamp
+    private Timestamp updatedAt;
 
 }
