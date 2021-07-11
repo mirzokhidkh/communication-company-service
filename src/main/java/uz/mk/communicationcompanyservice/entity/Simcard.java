@@ -11,6 +11,7 @@ import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 
 import javax.persistence.*;
 import java.sql.Timestamp;
+import java.util.List;
 import java.util.UUID;
 
 @Data
@@ -23,8 +24,8 @@ public class Simcard {
     @GeneratedValue
     private UUID id;
 
-    @Column(nullable = false)
-    private String countryCode;
+//    @Column(nullable = false)
+    private String countryCode="+998";
 
     @Column(nullable = false)
     private String companyCode;
@@ -32,7 +33,15 @@ public class Simcard {
     @Column(nullable = false)
     private String number;
 
+    private Double balance=0.0;
+
     private boolean status;
+
+    @ManyToMany
+    private List<Package> currentPackage;
+
+    @ManyToMany
+    private List<InfoAndEntertainmentService> currentService;
 
     @ManyToOne
     private User client;
@@ -46,7 +55,7 @@ public class Simcard {
     @LastModifiedBy
     private UUID updatedBy;
 
-    @Column(updatable = false,nullable = false)
+    @Column(updatable = false, nullable = false)
     @CreationTimestamp
     private Timestamp createdAt;
 

@@ -45,9 +45,6 @@ public class User implements UserDetails {
     @Column(nullable = false)
     private String password;
 
-
-    private Double balance;
-
     private String passportId;
 
     private boolean status;

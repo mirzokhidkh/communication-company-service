@@ -17,9 +17,9 @@ import java.util.UUID;
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
-@Entity
+@Entity(name = "service")
 @EntityListeners(AuditingEntityListener.class)
-public class Service {
+public class InfoAndEntertainmentService {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer id;

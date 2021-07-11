@@ -40,6 +40,8 @@ public class AuthService implements UserDetailsService {
 
     final JwtProvider jwtProvider;
 
+
+
     @Autowired
     public AuthService(@Lazy PasswordEncoder passwordEncoder, UserRepository userRepository, AuthenticationManager authenticationManager, JwtProvider jwtProvider, RoleRepository roleRepository) {
         this.passwordEncoder = passwordEncoder;

@@ -7,5 +7,4 @@ import uz.mk.communicationcompanyservice.entity.Package;
 
 @RepositoryRestResource(path = "package",collectionResourceRel = "list")
 public interface PackageRepository extends JpaRepository<Package, Integer> {
-
 }

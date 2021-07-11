@@ -8,7 +8,8 @@ values ('ROLE_DIRECTOR'),
        ('ROLE_CLIENT'),
        ('ROLE_STAFF'),
        ('ROLE_PHYSICAL_PERSON'),
-       ('ROLE_LEGAL_PERSON');
+       ('ROLE_LEGAL_PERSON'),
+       ('ROLE_TARIFF_MANAGER');
 
 insert into payment_type(payment_type_name)
 values ('CLICK'),
@@ -22,7 +23,8 @@ values ('DAILY'),
 insert into service_type(service_type_name)
 values ('MB'),
        ('SMS'),
-       ('MINUTE');
+       ('MINUTE'),
+       ('VOICE_MESSAGE');
 
 insert into region(name)
 values ('Tashkent'),

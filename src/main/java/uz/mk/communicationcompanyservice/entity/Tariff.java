@@ -1,10 +1,11 @@
 package uz.mk.communicationcompanyservice.entity;
 
-import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import org.hibernate.annotations.CreationTimestamp;
+import org.hibernate.annotations.OnDelete;
+import org.hibernate.annotations.OnDeleteAction;
 import org.hibernate.annotations.UpdateTimestamp;
 import org.springframework.data.annotation.CreatedBy;
 import org.springframework.data.annotation.LastModifiedBy;
@@ -26,13 +27,17 @@ public class Tariff {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer id;
 
-    @Column(nullable = false)
+    @Column(unique = true, nullable = false)
     private String name;
 
-    @Column(nullable = false,columnDefinition = "TEXT")
+    @Column(nullable = false, columnDefinition = "TEXT")
     private String description;
 
-    private Double price = 0.0 ;
+    private Double price = 0.0;
+
+    @OnDelete(action = OnDeleteAction.CASCADE)
+    @OneToOne(fetch = FetchType.EAGER, cascade = CascadeType.ALL)
+    private TariffSet tariffSet;
 
     private Double switchCost = 0.0;
 
@@ -45,11 +50,10 @@ public class Tariff {
     private List<Package> packages;
 
     @ManyToMany
-    private List<Service> services;
+    private List<InfoAndEntertainmentService> services;
 
-
-    @JsonIgnore
-    @OneToMany(mappedBy = "tariff",cascade = CascadeType.ALL)
+    @OnDelete(action = OnDeleteAction.CASCADE)
+    @OneToMany(mappedBy = "tariff", cascade = CascadeType.ALL)
     private List<Simcard> simcard;
 
     @CreatedBy
@@ -58,7 +62,7 @@ public class Tariff {
     @LastModifiedBy
     private UUID updatedBy;
 
-    @Column(updatable = false,nullable = false)
+    @Column(updatable = false, nullable = false)
     @CreationTimestamp
     private Timestamp createdAt;
 
