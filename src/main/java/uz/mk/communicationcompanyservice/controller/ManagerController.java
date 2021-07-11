@@ -5,9 +5,8 @@ import org.springframework.http.HttpEntity;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
-import uz.mk.communicationcompanyservice.payload.ServiceStaticsDto;
+import uz.mk.communicationcompanyservice.payload.ServiceWithDataStatics;
 import uz.mk.communicationcompanyservice.service.ManagerService;
 
 import java.util.List;
@@ -22,7 +21,7 @@ public class ManagerController {
 
     @GetMapping("/buyingServcesStatics")
     public HttpEntity<?> getAllBuyingServicesStatics() {
-        List<ServiceStaticsDto> popularServices = managerService.getAllBuyingServicesStatics();
+        List<ServiceWithDataStatics> popularServices = managerService.getAllBuyingServicesStatics();
         return ResponseEntity.ok(popularServices);
     }
 }

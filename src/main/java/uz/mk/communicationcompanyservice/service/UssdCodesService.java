@@ -107,10 +107,9 @@ public class UssdCodesService {
         return new ApiResponse("Successfully bought package", true);
     }
 
-
     @Transactional
     public ApiResponse buyExtraService(Integer serviceId, UUID simcardId) {
-        InfoAndEntertainmentService extraService = extraServiceRepository.getById(serviceId);
+        ExtraService extraService = extraServiceRepository.getById(serviceId);
         Simcard simcard = simcardRepository.getById(simcardId);
 
         Double servicePrice = extraService.getPrice();
@@ -118,7 +117,7 @@ public class UssdCodesService {
             return new ApiResponse("You don't have enough money to buy such a service", false);
         }
 
-        List<InfoAndEntertainmentService> serviceList = simcard.getCurrentService();
+        List<ExtraService> serviceList = simcard.getCurrentService();
 
         serviceList.add(extraService);
         simcard.setCurrentService(serviceList);

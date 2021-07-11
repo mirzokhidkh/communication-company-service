@@ -3,11 +3,8 @@ package uz.mk.communicationcompanyservice.repository;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.rest.core.annotation.RepositoryRestResource;
-import org.springframework.stereotype.Repository;
-import uz.mk.communicationcompanyservice.entity.InfoAndEntertainmentService;
-import uz.mk.communicationcompanyservice.entity.Package;
 import uz.mk.communicationcompanyservice.entity.Simcard;
-import uz.mk.communicationcompanyservice.payload.ServiceStaticsDto;
+import uz.mk.communicationcompanyservice.payload.ServiceWithDataStatics;
 
 import java.util.List;
 import java.util.Optional;
@@ -26,7 +23,7 @@ public interface SimcardRepository extends JpaRepository<Simcard, UUID> {
 //    @Query(value = "select count(*) , current_service_id from simcard_current_service group by current_service_id", nativeQuery = true)
 //    List<Object> findAllBuyingServicesStatics();
 
-    @Query(value = "select new uz.mk.communicationcompanyservice.payload.ServiceStaticsDto(" +
+    @Query(value = "select new uz.mk.communicationcompanyservice.payload.ServiceWithDataStatics(" +
             "s.id," +
             "s.name," +
             "s.value," +
@@ -36,7 +33,7 @@ public interface SimcardRepository extends JpaRepository<Simcard, UUID> {
             "s.serviceType.id, " +
             "count(i)) " +
             "from Simcard i join i.currentService s group by s.id  ")
-    List<ServiceStaticsDto> findAllBuyingServicesStatics();
+    List<ServiceWithDataStatics> findAllBuyingServicesStatics();
 
 
 }

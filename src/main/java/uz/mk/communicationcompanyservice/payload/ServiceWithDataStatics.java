@@ -12,7 +12,7 @@ import javax.persistence.ManyToOne;
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
-public class ServiceStaticsDto {
+public class ServiceWithDataStatics {
     private Integer serviceId;
 
     private String name;
@@ -29,7 +29,7 @@ public class ServiceStaticsDto {
 
     private Long numberOfUses;
 
-    public ServiceStaticsDto(Integer serviceId, String name, Long numberOfUses) {
+    public ServiceWithDataStatics(Integer serviceId, String name, Long numberOfUses) {
         this.serviceId = serviceId;
         this.name = name;
         this.numberOfUses = numberOfUses;

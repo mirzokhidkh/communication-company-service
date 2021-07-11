@@ -19,7 +19,7 @@ import java.util.UUID;
 @NoArgsConstructor
 @Entity(name = "service")
 @EntityListeners(AuditingEntityListener.class)
-public class InfoAndEntertainmentService {
+public class ExtraService {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer id;

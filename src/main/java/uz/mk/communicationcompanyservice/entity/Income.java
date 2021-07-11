@@ -20,14 +20,17 @@ public class Income {
     private UUID id;
 
     @Column(nullable = false)
-    private Double amount;
+    private Double amount = 0.0;
 
     @ManyToOne
     private User client;
 
-    @Column(updatable = false,nullable = false)
+    @Column(updatable = false, nullable = false)
     @CreationTimestamp
     private Timestamp date;
+
+    @ManyToOne
+    private PurchasedItemType purchasedItemType;
 
     @ManyToOne
     private PaymentType paymentType;

@@ -2,7 +2,7 @@ package uz.mk.communicationcompanyservice.service;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-import uz.mk.communicationcompanyservice.payload.ServiceStaticsDto;
+import uz.mk.communicationcompanyservice.payload.ServiceWithDataStatics;
 import uz.mk.communicationcompanyservice.repository.InfoAndEntertainmentServiceRepository;
 import uz.mk.communicationcompanyservice.repository.SimcardRepository;
 
@@ -17,8 +17,8 @@ public class ManagerService {
     @Autowired
     SimcardRepository simcardRepository;
 
-    public List<ServiceStaticsDto> getAllBuyingServicesStatics(){
-        List<ServiceStaticsDto> popularServices = simcardRepository.findAllBuyingServicesStatics();
+    public List<ServiceWithDataStatics> getAllBuyingServicesStatics(){
+        List<ServiceWithDataStatics> popularServices = simcardRepository.findAllBuyingServicesStatics();
         return popularServices;
     }
 }

@@ -16,6 +16,12 @@ values ('CLICK'),
        ('PAYME'),
        ('CASH');
 
+insert into purchased_item_type(name)
+values ('SIMCARD'),
+       ('TARIFF'),
+       ('PACKAGE'),
+       ('EXTRA_SERVICE');
+
 insert into purchase_type(purchase_type_name)
 values ('DAILY'),
        ('MONTHLY');

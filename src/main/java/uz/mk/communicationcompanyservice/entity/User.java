@@ -1,12 +1,11 @@
 package uz.mk.communicationcompanyservice.entity;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import org.hibernate.annotations.CreationTimestamp;
-import org.hibernate.annotations.OnDelete;
-import org.hibernate.annotations.OnDeleteAction;
 import org.hibernate.annotations.UpdateTimestamp;
 import org.springframework.data.annotation.CreatedBy;
 import org.springframework.data.annotation.LastModifiedBy;
@@ -25,8 +24,9 @@ import java.util.UUID;
 @AllArgsConstructor
 @NoArgsConstructor
 @Entity(name = "users")
-@JsonIgnoreProperties({"turniket"})
 @EntityListeners(AuditingEntityListener.class)
+//@JsonIgnoreProperties({"hibernateLazyInitializer", "handler"})
+//@JsonIgnoreProperties({"turniket","simcard"})
 public class User implements UserDetails {
 
     @Id
@@ -55,10 +55,14 @@ public class User implements UserDetails {
     @ManyToMany
     private List<Detail> detail;
 
-    @OneToOne(mappedBy = "staff", cascade = {CascadeType.ALL})
+
+    @OneToOne(mappedBy = "staff", cascade = {CascadeType.ALL}, fetch = FetchType.LAZY)
+    @JsonIgnore
     private Turniket turniket;
 
-    @OneToMany(mappedBy = "client", cascade = CascadeType.ALL)
+
+    @OneToMany(mappedBy = "client", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+    @JsonIgnore
     private List<Simcard> simcard;
 
     public User(String firstname, String lastname, String username, String password) {
@@ -111,3 +115,5 @@ public class User implements UserDetails {
         return enabled;
     }
 }
+
+

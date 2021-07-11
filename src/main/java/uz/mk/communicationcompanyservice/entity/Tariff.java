@@ -1,5 +1,6 @@
 package uz.mk.communicationcompanyservice.entity;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -50,10 +51,11 @@ public class Tariff {
     private List<Package> packages;
 
     @ManyToMany
-    private List<InfoAndEntertainmentService> services;
+    private List<ExtraService> services;
 
     @OnDelete(action = OnDeleteAction.CASCADE)
     @OneToMany(mappedBy = "tariff", cascade = CascadeType.ALL)
+    @JsonIgnore
     private List<Simcard> simcard;
 
     @CreatedBy

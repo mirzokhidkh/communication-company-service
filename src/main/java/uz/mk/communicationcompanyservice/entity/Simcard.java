@@ -41,7 +41,7 @@ public class Simcard {
     private List<Package> currentPackage;
 
     @ManyToMany
-    private List<InfoAndEntertainmentService> currentService;
+    private List<ExtraService> currentService;
 
     @ManyToOne
     private User client;
