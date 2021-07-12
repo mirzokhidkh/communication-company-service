@@ -55,10 +55,10 @@ public class UssdCodesService {
 
     @Transactional
     public ApiResponse changeTariff(Integer tariffId, UUID simcardId) {
-        Tariff tariff = tariffRepository.getById(tariffId);
+        Tariff tariff = tariffRepository.findById(tariffId).get();
         Double switchCostAmount = tariff.getSwitchCost();
 
-        Simcard simcard = simcardRepository.getById(simcardId);
+        Simcard simcard = simcardRepository.findById(simcardId).get();
 
         if (simcard.getBalance() < switchCostAmount) {
             return new ApiResponse("You don't have enough money to switch to tariff", false);

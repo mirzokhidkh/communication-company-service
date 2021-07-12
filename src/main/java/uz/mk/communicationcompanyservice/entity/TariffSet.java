@@ -26,11 +26,19 @@ public class TariffSet {
     private Integer id;
 
     private Double mb;
+
     private Integer sms;
+
     private Integer minute;
 
+    private Double internetTrafficPrice;
+
+    private Double smsPrice;
+
+    private Double outgoingCallPrice;
+
     @JsonIgnore
-    @OneToOne(mappedBy = "tariffSet",cascade = CascadeType.ALL)
+    @OneToOne(mappedBy = "tariffSet", cascade = CascadeType.ALL)
     private Tariff tariff;
 
     @CreatedBy

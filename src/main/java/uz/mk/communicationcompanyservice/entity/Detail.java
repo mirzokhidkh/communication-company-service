@@ -23,6 +23,9 @@ public class Detail {
     @Column(nullable = false)
     private String name;
 
+    @Column(columnDefinition = "TEXT")
+    private String description;
+
     @Column(updatable = false,nullable = false)
     @CreationTimestamp
     private Timestamp date;
