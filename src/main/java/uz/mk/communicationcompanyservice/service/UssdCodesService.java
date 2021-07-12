@@ -9,6 +9,7 @@ import uz.mk.communicationcompanyservice.entity.enums.ClientMoveTypeName;
 import uz.mk.communicationcompanyservice.entity.enums.ServiceTypeName;
 import uz.mk.communicationcompanyservice.payload.ApiResponse;
 import uz.mk.communicationcompanyservice.repository.*;
+import uz.mk.communicationcompanyservice.utils.CommonUtils;
 
 import java.util.List;
 import java.util.UUID;
@@ -76,7 +77,9 @@ public class UssdCodesService {
 
         simcardRepository.save(simcard);
 
-        saveDetail("User changed tariff", ClientMoveTypeName.CHANGED_TARIFF, simcard);
+        ClientMoveType clientMoveType = clientMoveTypeRepository.findByName(ClientMoveTypeName.CHANGED_TARIFF);
+        Detail detail = CommonUtils.createDetail("User changed tariff", "", clientMoveType, simcard);
+        detailRepository.save(detail);
 
         return new ApiResponse("Successfully switched to tariff", true);
     }
@@ -125,7 +128,9 @@ public class UssdCodesService {
         simcard.setBalance(simcard.getBalance() - packagePrice);
         simcardRepository.save(simcard);
 
-        saveDetail("User bought the package", ClientMoveTypeName.PURCHASED_PACKAGE, simcard);
+        ClientMoveType clientMoveType = clientMoveTypeRepository.findByName(ClientMoveTypeName.PURCHASED_PACKAGE);
+        Detail detail = CommonUtils.createDetail("User bought the package", "", clientMoveType, simcard);
+        detailRepository.save(detail);
 
         return new ApiResponse("Successfully bought package", true);
     }
@@ -147,18 +152,11 @@ public class UssdCodesService {
         simcard.setBalance(simcard.getBalance() - servicePrice);
         simcardRepository.save(simcard);
 
-        saveDetail("User bought the extra service", ClientMoveTypeName.PURCHASED_EXTRA_SERVICE, simcard);
+        ClientMoveType clientMoveType = clientMoveTypeRepository.findByName(ClientMoveTypeName.PURCHASED_EXTRA_SERVICE);
+        Detail detail = CommonUtils.createDetail("User bought the extra service", "", clientMoveType, simcard);
+        detailRepository.save(detail);
 
         return new ApiResponse("Successfully bought service", true);
-    }
-
-    private void saveDetail(String name, ClientMoveTypeName clientMoveTypeName, Simcard simcard) {
-        Detail detail = new Detail();
-        detail.setName(name);
-        detail.setSimcard(simcard);
-        ClientMoveType clientMoveType = clientMoveTypeRepository.findByName(clientMoveTypeName);
-        detail.setClientMoveType(clientMoveType);
-        detailRepository.save(detail);
     }
 
 

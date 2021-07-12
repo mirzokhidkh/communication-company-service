@@ -4,6 +4,7 @@ package uz.mk.communicationcompanyservice.utils;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import uz.mk.communicationcompanyservice.entity.*;
+import uz.mk.communicationcompanyservice.entity.enums.ClientMoveTypeName;
 import uz.mk.communicationcompanyservice.entity.enums.RoleName;
 
 import java.util.HashMap;
@@ -28,6 +29,24 @@ public class CommonUtils {
 
     public static boolean isExistsAuthority(Set<Role> roles, RoleName roleName) {
         return roles.stream().anyMatch(role -> role.getRoleName().equals(roleName));
+    }
+
+    public static Income createIncome(Double price, Simcard simcard, ClientMoveType clientMoveType, PaymentType paymentType) {
+        Income income = new Income();
+        income.setAmount(price);
+        income.setSimcard(simcard);
+        income.setClientMoveType(clientMoveType);
+        income.setPaymentType(paymentType);
+        return income;
+    }
+
+    public static Detail createDetail(String name,String description, ClientMoveType clientMoveType, Simcard simcard) {
+        Detail detail = new Detail();
+        detail.setName(name);
+        detail.setDescription(description);
+        detail.setSimcard(simcard);
+        detail.setClientMoveType(clientMoveType);
+        return detail;
     }
 
 

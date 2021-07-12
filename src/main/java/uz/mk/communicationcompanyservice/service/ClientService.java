@@ -7,6 +7,7 @@ import uz.mk.communicationcompanyservice.entity.*;
 import uz.mk.communicationcompanyservice.entity.enums.ClientMoveTypeName;
 import uz.mk.communicationcompanyservice.payload.ApiResponse;
 import uz.mk.communicationcompanyservice.repository.*;
+import uz.mk.communicationcompanyservice.utils.CommonUtils;
 
 import java.util.Optional;
 import java.util.UUID;
@@ -52,8 +53,11 @@ public class ClientService {
 
         String description = "User sent message " + (amount >= 0
                 ? (numberOfSms + " SMS in limit")
-                : (oldNumberOfSms + " SMS in limit and " + amountBalance + " so'm were deducted from balance for " + Math.abs(amount) + " SMS (" + smsPrice + " so'm per 1 SMS)"));
-        saveDetail("User sent message", description, ClientMoveTypeName.SENT_MESSAGE, simcard);
+                : (oldNumberOfSms + " SMS in limit and " + amountBalance + " sum were deducted from balance for " + Math.abs(amount) + " SMS (" + smsPrice + " sum per 1 SMS)"));
+
+        ClientMoveType clientMoveType = clientMoveTypeRepository.findByName(ClientMoveTypeName.SENT_MESSAGE);
+        Detail detail = CommonUtils.createDetail("User sent message",description, clientMoveType, simcard);
+        detailRepository.save(detail);
 
         return new ApiResponse(description, true);
     }
@@ -79,8 +83,11 @@ public class ClientService {
         simcardSetRepository.save(simcardSet);
         String description = "User called for " + (newMinutes >= 0
                 ? (minutes + " minutes in limit")
-                : (oldMinutes + " minutes in limit and " + amountBalance + " so'm were deducted from balance for " + Math.abs(newMinutes) + " minutes (" + outgoingCallPrice + " so'm per 1 Minute)"));
-        saveDetail("User called", description, ClientMoveTypeName.CALLED, simcard);
+                : (oldMinutes + " minutes in limit and " + amountBalance + " sum were deducted from balance for " + Math.abs(newMinutes) + " minutes (" + outgoingCallPrice + " sum per 1 Minute)"));
+
+        ClientMoveType clientMoveType = clientMoveTypeRepository.findByName(ClientMoveTypeName.CALLED);
+        Detail detail = CommonUtils.createDetail("User called",description, clientMoveType, simcard);
+        detailRepository.save(detail);
 
         return new ApiResponse(description, true);
 
@@ -106,21 +113,13 @@ public class ClientService {
         simcardSetRepository.save(simcardSet);
         String description = "User used " + (newAmountMb >= 0
                 ? (amountOfMb + " MB in limit")
-                : (oldMb + " MB in limit and " + amountBalance + " so'm were deducted from balance for " + Math.abs(newAmountMb) + " MB (" + trafficPrice + " so'm per 1 MB)"));
-        saveDetail("User used the internet", description, ClientMoveTypeName.USED_THE_INTERNET, simcard);
+                : (oldMb + " MB in limit and " + amountBalance + " sum were deducted from balance for " + Math.abs(newAmountMb) + " MB (" + trafficPrice + " sum per 1 MB)"));
+
+        ClientMoveType clientMoveType = clientMoveTypeRepository.findByName(ClientMoveTypeName.USED_THE_INTERNET);
+        Detail detail = CommonUtils.createDetail("User used the internet",description, clientMoveType, simcard);
+        detailRepository.save(detail);
 
         return new ApiResponse(description, true);
-    }
-
-
-    private void saveDetail(String name, String description, ClientMoveTypeName clientMoveTypeName, Simcard simcard) {
-        Detail detail = new Detail();
-        detail.setName(name);
-        detail.setDescription(description);
-        detail.setSimcard(simcard);
-        ClientMoveType clientMoveType = clientMoveTypeRepository.findByName(clientMoveTypeName);
-        detail.setClientMoveType(clientMoveType);
-        detailRepository.save(detail);
     }
 
 }

@@ -9,6 +9,7 @@ import uz.mk.communicationcompanyservice.payload.ApiResponse;
 import uz.mk.communicationcompanyservice.payload.SimcardDto;
 import uz.mk.communicationcompanyservice.payload.TariffWithDataStatics;
 import uz.mk.communicationcompanyservice.repository.*;
+import uz.mk.communicationcompanyservice.utils.CommonUtils;
 
 import java.util.List;
 
@@ -61,7 +62,10 @@ public class BranchOfficeService {
 
         Simcard savedSimcard = simcardRepository.save(simcard);
 
-        createIncome(simcardDto.getPrice(), savedSimcard, ClientMoveTypeName.PURCHASED_SIMCARD, simcardDto.getPaymentTypeId());
+        ClientMoveType clientMoveType = clientMoveTypeRepository.findByName(ClientMoveTypeName.PURCHASED_SIMCARD);
+        PaymentType paymentType = paymentTypeRepository.findById(simcardDto.getPaymentTypeId()).get();
+        Income income = CommonUtils.createIncome(simcardDto.getPrice(), savedSimcard, clientMoveType, paymentType);
+        incomeRepository.save(income);
 
         return new ApiResponse("Successfully bought simcard", true, savedSimcard);
     }
@@ -72,17 +76,6 @@ public class BranchOfficeService {
         return tariffWithDataStaticsList;
     }
 
-
-    private void createIncome(Double price, Simcard simcard, ClientMoveTypeName clientMoveTypeName, Integer paymentTypeId) {
-        Income income = new Income();
-        income.setAmount(price);
-        income.setSimcard(simcard);
-        ClientMoveType clientMoveType = clientMoveTypeRepository.findByName(clientMoveTypeName);
-        income.setClientMoveType(clientMoveType);
-        PaymentType paymentType = paymentTypeRepository.findById(paymentTypeId).get();
-        income.setPaymentType(paymentType);
-        incomeRepository.save(income);
-    }
 
 
 }
