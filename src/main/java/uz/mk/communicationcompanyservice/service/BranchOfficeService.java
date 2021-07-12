@@ -5,6 +5,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import uz.mk.communicationcompanyservice.entity.*;
 import uz.mk.communicationcompanyservice.entity.enums.ClientMoveTypeName;
+import uz.mk.communicationcompanyservice.entity.enums.RoleName;
 import uz.mk.communicationcompanyservice.payload.ApiResponse;
 import uz.mk.communicationcompanyservice.payload.SimcardDto;
 import uz.mk.communicationcompanyservice.payload.TariffWithDataStatics;
@@ -12,6 +13,8 @@ import uz.mk.communicationcompanyservice.repository.*;
 import uz.mk.communicationcompanyservice.utils.CommonUtils;
 
 import java.util.List;
+import java.util.Map;
+import java.util.Set;
 
 @Service
 public class BranchOfficeService {
@@ -71,11 +74,20 @@ public class BranchOfficeService {
     }
 
 
-    public List<TariffWithDataStatics> getAllBuyingTariffs() {
-        List<TariffWithDataStatics> tariffWithDataStaticsList = simcardRepository.findAllBuyingTariffs();
-        return tariffWithDataStaticsList;
-    }
+    public ApiResponse getAllBuyingTariffs() {
+        Map<String, Object> contextHolder = CommonUtils.getPrincipalAndRoleFromSecurityContextHolder();
+        Set<Role> principalUserRoles = (Set<Role>) contextHolder.get("principalUserRoles");
 
+        boolean isDirectorAuthority = CommonUtils.isExistsAuthority(principalUserRoles, RoleName.ROLE_DIRECTOR);
+        boolean isBranchDirectorAuthority = CommonUtils.isExistsAuthority(principalUserRoles, RoleName.ROLE_BRANCH_DIRECTOR);
+        boolean isBranchManagerAuthority = CommonUtils.isExistsAuthority(principalUserRoles, RoleName.ROLE_BRANCH_MANAGER);
+
+        if (!(isDirectorAuthority || isBranchDirectorAuthority || isBranchManagerAuthority)) {
+            return new ApiResponse("You don't have the authority to add staff", false);
+        }
+        List<TariffWithDataStatics> tariffWithDataStaticsList = simcardRepository.findAllBuyingTariffs();
+        return new ApiResponse("Tariff with data statics list", true, tariffWithDataStaticsList);
+    }
 
 
 }
