@@ -5,6 +5,7 @@ import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.rest.core.annotation.RepositoryRestResource;
 import uz.mk.communicationcompanyservice.entity.Simcard;
 import uz.mk.communicationcompanyservice.payload.ServiceWithDataStatics;
+import uz.mk.communicationcompanyservice.payload.TariffWithDataStatics;
 
 import java.util.List;
 import java.util.Optional;
@@ -34,6 +35,20 @@ public interface SimcardRepository extends JpaRepository<Simcard, UUID> {
             "count(i)) " +
             "from Simcard i join i.currentService s group by s.id  ")
     List<ServiceWithDataStatics> findAllBuyingServicesStatics();
+
+    @Query(value = "select new uz.mk.communicationcompanyservice.payload.TariffWithDataStatics(" +
+            "t.id,\n" +
+            "t.name,\n" +
+            "t.description,\n" +
+            "t.price,\n" +
+            "t.tariffSet.id,\n" +
+            "t.switchCost,\n" +
+            "t.validityPeriod,\n" +
+            "count(i)) \n" +
+            "from Simcard i \n" +
+            "         join Tariff t on i.tariff.id = t.id \n" +
+            "group by t.id")
+    List<TariffWithDataStatics> findAllBuyingTariffs();
 
 
 }

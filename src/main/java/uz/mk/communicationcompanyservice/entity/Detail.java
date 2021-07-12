@@ -26,4 +26,10 @@ public class Detail {
     @Column(updatable = false,nullable = false)
     @CreationTimestamp
     private Timestamp date;
+
+    @ManyToOne
+    private ClientMoveType clientMoveType;
+
+    @ManyToOne
+    private Simcard simcard;
 }

@@ -52,9 +52,6 @@ public class User implements UserDetails {
     @ManyToMany
     private Set<Role> role;
 
-    @ManyToMany
-    private List<Detail> detail;
-
 
     @OneToOne(mappedBy = "staff", cascade = {CascadeType.ALL}, fetch = FetchType.LAZY)
     @JsonIgnore

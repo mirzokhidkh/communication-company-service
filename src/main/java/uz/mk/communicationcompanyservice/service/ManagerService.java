@@ -3,7 +3,7 @@ package uz.mk.communicationcompanyservice.service;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import uz.mk.communicationcompanyservice.payload.ServiceWithDataStatics;
-import uz.mk.communicationcompanyservice.repository.InfoAndEntertainmentServiceRepository;
+import uz.mk.communicationcompanyservice.repository.ExtraServiceRepository;
 import uz.mk.communicationcompanyservice.repository.SimcardRepository;
 
 import java.util.List;
@@ -12,7 +12,7 @@ import java.util.List;
 public class ManagerService {
 
     @Autowired
-    InfoAndEntertainmentServiceRepository serviceRepository;
+    ExtraServiceRepository serviceRepository;
 
     @Autowired
     SimcardRepository simcardRepository;

@@ -16,11 +16,17 @@ values ('CLICK'),
        ('PAYME'),
        ('CASH');
 
-insert into purchased_item_type(name)
-values ('SIMCARD'),
-       ('TARIFF'),
-       ('PACKAGE'),
-       ('EXTRA_SERVICE');
+insert into client_move_type(name)
+values ('PURCHASED_SIMCARD'),
+       ('PURCHASED_TARIFF'),
+       ('PURCHASED_PACKAGE'),
+       ('PURCHASED_EXTRA_SERVICE'),
+       ('CHANGED_TARIFF'),
+       ('SENT_MESSAGE'),
+       ('CALLED'),
+       ('USED_THE_INTERNET'),
+       ('USED_FROM_PACKAGE'),
+       ('USED_FROM_EXTRA_SERVICE');
 
 insert into purchase_type(purchase_type_name)
 values ('DAILY'),

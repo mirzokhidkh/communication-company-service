@@ -4,6 +4,8 @@ import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import org.hibernate.annotations.CreationTimestamp;
+import org.hibernate.annotations.OnDelete;
+import org.hibernate.annotations.OnDeleteAction;
 import org.hibernate.annotations.UpdateTimestamp;
 import org.springframework.data.annotation.CreatedBy;
 import org.springframework.data.annotation.LastModifiedBy;
@@ -24,8 +26,8 @@ public class Simcard {
     @GeneratedValue
     private UUID id;
 
-//    @Column(nullable = false)
-    private String countryCode="+998";
+    //    @Column(nullable = false)
+    private String countryCode = "+998";
 
     @Column(nullable = false)
     private String companyCode;
@@ -33,7 +35,11 @@ public class Simcard {
     @Column(nullable = false)
     private String number;
 
-    private Double balance=0.0;
+    private Double balance = 0.0;
+
+    @OnDelete(action = OnDeleteAction.CASCADE)
+    @OneToOne(fetch = FetchType.EAGER, cascade = CascadeType.ALL)
+    private SimcardSet simcardSet;
 
     private boolean status;
 

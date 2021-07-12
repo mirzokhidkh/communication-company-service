@@ -11,8 +11,6 @@ import org.springframework.data.annotation.LastModifiedBy;
 import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 
 import javax.persistence.*;
-import javax.persistence.criteria.CriteriaBuilder;
-import java.util.List;
 import java.util.UUID;
 
 @Data
@@ -20,18 +18,20 @@ import java.util.UUID;
 @NoArgsConstructor
 @Entity
 @EntityListeners(AuditingEntityListener.class)
-public class TariffSet {
+public class SimcardSet {
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Integer id;
+    @Type(type = "org.hibernate.type.PostgresUUIDType")
+    @GeneratedValue(generator = "uuid2")
+    @GenericGenerator(name = "uuid2", strategy = "org.hibernate.id.UUIDGenerator")
+    private UUID id;
 
-    private Double mb;
-    private Integer sms;
-    private Integer minute;
+    private Double mb = 0.0;
+    private Integer sms = 0;
+    private Integer minute = 0;
 
     @JsonIgnore
-    @OneToOne(mappedBy = "tariffSet",cascade = CascadeType.ALL)
-    private Tariff tariff;
+    @OneToOne(mappedBy = "simcardSet", cascade = CascadeType.ALL)
+    private Simcard simcard;
 
     @CreatedBy
     private UUID createdBy;

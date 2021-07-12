@@ -7,10 +7,11 @@ import uz.mk.communicationcompanyservice.entity.ExtraService;
 import java.util.List;
 
 @RepositoryRestResource(path = "service",collectionResourceRel = "list")
-public interface InfoAndEntertainmentServiceRepository extends JpaRepository<ExtraService, Integer> {
+public interface ExtraServiceRepository extends JpaRepository<ExtraService, Integer> {
 
 
     List<ExtraService> findAllByServiceTypeId(Integer serviceType_id);
+
 
 
 }

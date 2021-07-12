@@ -5,6 +5,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import uz.mk.communicationcompanyservice.entity.*;
 import uz.mk.communicationcompanyservice.entity.Package;
+import uz.mk.communicationcompanyservice.entity.enums.ClientMoveTypeName;
 import uz.mk.communicationcompanyservice.entity.enums.ServiceTypeName;
 import uz.mk.communicationcompanyservice.payload.ApiResponse;
 import uz.mk.communicationcompanyservice.repository.*;
@@ -24,13 +25,22 @@ public class UssdCodesService {
     SimcardRepository simcardRepository;
 
     @Autowired
+    SimcardSetRepository simcardSetRepository;
+
+    @Autowired
     TariffRepository tariffRepository;
 
     @Autowired
     PackageRepository packageRepository;
 
     @Autowired
-    InfoAndEntertainmentServiceRepository extraServiceRepository;
+    ExtraServiceRepository extraServiceRepository;
+
+    @Autowired
+    DetailRepository detailRepository;
+
+    @Autowired
+    ClientMoveTypeRepository clientMoveTypeRepository;
 
     public List<Ussd> getAllUssdCodes() {
         List<Ussd> ussdList = ussdRepository.findAll();
@@ -54,9 +64,19 @@ public class UssdCodesService {
             return new ApiResponse("You don't have enough money to switch to tariff", false);
         }
 
+
         simcard.setBalance(simcard.getBalance() - switchCostAmount);
         simcard.setTariff(tariff);
+        TariffSet tariffSet = tariff.getTariffSet();
+        SimcardSet simcardSet = simcard.getSimcardSet();
+        simcardSet.setMb(tariffSet.getMb());
+        simcardSet.setSms(tariffSet.getSms());
+        simcardSet.setMinute(tariffSet.getMinute());
+        simcardSetRepository.save(simcardSet);
+
         simcardRepository.save(simcard);
+
+        saveDetail("User changed tariff", ClientMoveTypeName.CHANGED_TARIFF, simcard);
 
         return new ApiResponse("Successfully switched to tariff", true);
     }
@@ -66,7 +86,6 @@ public class UssdCodesService {
 
         Package buyingPackage = packageRepository.getById(packageId);
         Simcard simcard = simcardRepository.getById(simcardId);
-        Tariff tariff = simcard.getTariff();
 
         Double packagePrice = buyingPackage.getPrice();
         if (simcard.getBalance() < packagePrice) {
@@ -77,7 +96,7 @@ public class UssdCodesService {
 
         ServiceTypeName serviceTypeName = buyingPackage.getServiceType().getServiceTypeName();
         String packageValue = buyingPackage.getValue();
-        TariffSet tariffSet = tariff.getTariffSet();
+        SimcardSet simcardSet = simcard.getSimcardSet();
 
 
         if (packageList.size() != 0) {
@@ -86,23 +105,27 @@ public class UssdCodesService {
 
         switch (serviceTypeName.name()) {
             case "MB":
-                Double mb = tariffSet.getMb();
-                tariffSet.setMb(mb + Double.parseDouble(packageValue));
+                Double mb = simcardSet.getMb();
+                simcardSet.setMb(mb + Double.parseDouble(packageValue));
                 break;
             case "SMS":
-                Integer sms = tariffSet.getSms();
-                tariffSet.setSms(sms + Integer.parseInt(packageValue));
+                Integer sms = simcardSet.getSms();
+                simcardSet.setSms(sms + Integer.parseInt(packageValue));
                 break;
             case "MINUTE":
-                Integer minute = tariffSet.getMinute();
-                tariffSet.setMinute(minute + Integer.parseInt(packageValue));
+                Integer minute = simcardSet.getMinute();
+                simcardSet.setMinute(minute + Integer.parseInt(packageValue));
                 break;
         }
+
+        simcardSetRepository.save(simcardSet);
 
         packageList.add(buyingPackage);
         simcard.setCurrentPackage(packageList);
         simcard.setBalance(simcard.getBalance() - packagePrice);
         simcardRepository.save(simcard);
+
+        saveDetail("User bought the package", ClientMoveTypeName.PURCHASED_PACKAGE, simcard);
 
         return new ApiResponse("Successfully bought package", true);
     }
@@ -124,8 +147,20 @@ public class UssdCodesService {
         simcard.setBalance(simcard.getBalance() - servicePrice);
         simcardRepository.save(simcard);
 
+        saveDetail("User bought the extra service", ClientMoveTypeName.PURCHASED_EXTRA_SERVICE, simcard);
+
         return new ApiResponse("Successfully bought service", true);
     }
+
+    private void saveDetail(String name, ClientMoveTypeName clientMoveTypeName, Simcard simcard) {
+        Detail detail = new Detail();
+        detail.setName(name);
+        detail.setSimcard(simcard);
+        ClientMoveType clientMoveType = clientMoveTypeRepository.findByName(clientMoveTypeName);
+        detail.setClientMoveType(clientMoveType);
+        detailRepository.save(detail);
+    }
+
 
 
 }

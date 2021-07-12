@@ -6,7 +6,6 @@ import lombok.NoArgsConstructor;
 import org.hibernate.annotations.CreationTimestamp;
 
 import javax.persistence.*;
-import java.sql.Date;
 import java.sql.Timestamp;
 import java.util.UUID;
 
@@ -23,14 +22,14 @@ public class Income {
     private Double amount = 0.0;
 
     @ManyToOne
-    private User client;
+    private Simcard simcard;
 
     @Column(updatable = false, nullable = false)
     @CreationTimestamp
     private Timestamp date;
 
     @ManyToOne
-    private PurchasedItemType purchasedItemType;
+    private ClientMoveType clientMoveType;
 
     @ManyToOne
     private PaymentType paymentType;
