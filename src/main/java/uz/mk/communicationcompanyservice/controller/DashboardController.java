@@ -2,18 +2,12 @@ package uz.mk.communicationcompanyservice.controller;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpEntity;
-import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-import uz.mk.communicationcompanyservice.entity.Income;
 import uz.mk.communicationcompanyservice.payload.ApiResponse;
 import uz.mk.communicationcompanyservice.payload.SimcardDto;
-import uz.mk.communicationcompanyservice.payload.TariffWithDataStatics;
-import uz.mk.communicationcompanyservice.repository.IncomeRepository;
 import uz.mk.communicationcompanyservice.service.BranchOfficeService;
 import uz.mk.communicationcompanyservice.service.IncomeService;
-
-import java.util.List;
 
 @RestController
 @RequestMapping("/dashboard")
@@ -40,14 +34,14 @@ public class DashboardController {
 
     @GetMapping("/getIncomesByDaily")
     public HttpEntity<?> getIncomesByDaily() {
-        List<Income> incomes = incomeService.getIncomesByDaily();
-        return ResponseEntity.ok(incomes);
+        ApiResponse response = incomeService.getIncomesByDaily();
+        return ResponseEntity.status(response.isStatus() ? 200 : 403).body(response);
     }
 
     @GetMapping("/getIncomesByMonthly")
     public HttpEntity<?> getIncomesByMonthly() {
-        List<Income> incomes = incomeService.getIncomesByMonthly();
-        return ResponseEntity.ok(incomes);
+        ApiResponse response = incomeService.getIncomesByMonthly();
+        return ResponseEntity.status(response.isStatus() ? 200 : 403).body(response);
     }
 
 }

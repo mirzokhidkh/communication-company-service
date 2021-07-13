@@ -94,6 +94,8 @@ public class BranchOfficeService {
         if (!(isDirectorAuthority || isBranchDirectorAuthority || isBranchManagerAuthority)) {
             return new ApiResponse("You don't have the authority", false);
         }
+
+
         List<TariffWithDataStatics> tariffWithDataStaticsList = simcardRepository.findAllBuyingTariffs();
         return new ApiResponse("Tariff with data statics list", true, tariffWithDataStaticsList);
     }
