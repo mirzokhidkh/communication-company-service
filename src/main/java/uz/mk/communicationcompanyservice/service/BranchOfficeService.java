@@ -42,6 +42,15 @@ public class BranchOfficeService {
 
     @Transactional
     public ApiResponse buySimcard(SimcardDto simcardDto) {
+        Map<String, Object> contextHolder = CommonUtils.getPrincipalAndRoleFromSecurityContextHolder();
+        Set<Role> principalUserRoles = (Set<Role>) contextHolder.get("principalUserRoles");
+
+        boolean isStaffAuthority = CommonUtils.isExistsAuthority(principalUserRoles, RoleName.ROLE_STAFF);
+
+        if (!isStaffAuthority) {
+            return new ApiResponse("You don't have the authority", false);
+        }
+
         Simcard simcard = new Simcard();
         simcard.setCompanyCode(simcardDto.getCompanyCode());
         simcard.setNumber(simcardDto.getNumber());
