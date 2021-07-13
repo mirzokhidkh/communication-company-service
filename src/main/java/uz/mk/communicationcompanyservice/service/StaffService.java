@@ -31,8 +31,6 @@ public class StaffService {
     PasswordEncoder passwordEncoder;
 
 
-//    public Page<User> getAllStaff
-
     public ApiResponse editById(UUID id, UserDto userDto) {
         boolean existsByUsername = userRepository.existsByUsernameAndIdNot(userDto.getUsername(), id);
         if (existsByUsername) {

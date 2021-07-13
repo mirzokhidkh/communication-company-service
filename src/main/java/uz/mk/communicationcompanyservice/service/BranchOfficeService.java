@@ -83,7 +83,7 @@ public class BranchOfficeService {
         boolean isBranchManagerAuthority = CommonUtils.isExistsAuthority(principalUserRoles, RoleName.ROLE_BRANCH_MANAGER);
 
         if (!(isDirectorAuthority || isBranchDirectorAuthority || isBranchManagerAuthority)) {
-            return new ApiResponse("You don't have the authority to add staff", false);
+            return new ApiResponse("You don't have the authority", false);
         }
         List<TariffWithDataStatics> tariffWithDataStaticsList = simcardRepository.findAllBuyingTariffs();
         return new ApiResponse("Tariff with data statics list", true, tariffWithDataStaticsList);

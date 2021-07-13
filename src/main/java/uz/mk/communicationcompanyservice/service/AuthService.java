@@ -41,7 +41,6 @@ public class AuthService implements UserDetailsService {
     final JwtProvider jwtProvider;
 
 
-
     @Autowired
     public AuthService(@Lazy PasswordEncoder passwordEncoder, UserRepository userRepository, AuthenticationManager authenticationManager, JwtProvider jwtProvider, RoleRepository roleRepository) {
         this.passwordEncoder = passwordEncoder;
@@ -64,10 +63,14 @@ public class AuthService implements UserDetailsService {
 
         Set<Integer> roleIds = registerDto.getRoleIds();
         Set<Role> roleSet = roleRepository.findAllByIdIn(roleIds);
+        boolean existRoleStaff = CommonUtils.isExistsAuthority(roleSet, RoleName.ROLE_STAFF);
 
-        boolean isDirectorAuthority = CommonUtils.isExistsAuthority(principalUserRoles, RoleName.ROLE_DIRECTOR);
+
+        boolean isDirectorAuthority = CommonUtils.isExistsAuthority(principalUserRoles, RoleName.ROLE_DIRECTOR) &&
+                CommonUtils.isExistsAuthority(roleSet, "MANAGER");
+
         boolean isManagerAuthority = CommonUtils.isExistsAuthority(principalUserRoles, RoleName.ROLE_BRANCH_MANAGER) &&
-                CommonUtils.isExistsAuthority(roleSet, RoleName.ROLE_STAFF);
+                existRoleStaff;
 
         if (!(isDirectorAuthority || isManagerAuthority)) {
             return new ApiResponse("You don't have the authority to add staff", false);
@@ -83,7 +86,6 @@ public class AuthService implements UserDetailsService {
         user.setStatus(true);
         user.setRole(roleSet);
 
-        boolean existRoleStaff = CommonUtils.isExistsAuthority(roleSet, RoleName.ROLE_STAFF);
 
         if (existRoleStaff) {
             Turniket turniket = new Turniket();

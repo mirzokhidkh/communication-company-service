@@ -31,6 +31,10 @@ public class CommonUtils {
         return roles.stream().anyMatch(role -> role.getRoleName().equals(roleName));
     }
 
+    public static boolean isExistsAuthority(Set<Role> roles, String roleName) {
+        return roles.stream().anyMatch(role -> role.getRoleName().name().contains(roleName));
+    }
+
     public static Income createIncome(Double price, Simcard simcard, ClientMoveType clientMoveType, PaymentType paymentType) {
         Income income = new Income();
         income.setAmount(price);
@@ -40,7 +44,7 @@ public class CommonUtils {
         return income;
     }
 
-    public static Detail createDetail(String name,String description, ClientMoveType clientMoveType, Simcard simcard) {
+    public static Detail createDetail(String name, String description, ClientMoveType clientMoveType, Simcard simcard) {
         Detail detail = new Detail();
         detail.setName(name);
         detail.setDescription(description);

@@ -28,7 +28,7 @@ public class BranchOffice {
     @OneToOne
     private Region region;
 
-    @ManyToMany
+    @OneToMany
     private List<User> staff;
 
     @CreatedBy
