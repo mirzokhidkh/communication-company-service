@@ -1,17 +1,21 @@
 package uz.mk.communicationcompanyservice.service;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import uz.mk.communicationcompanyservice.entity.*;
 import uz.mk.communicationcompanyservice.entity.Package;
 import uz.mk.communicationcompanyservice.entity.enums.ClientMoveTypeName;
+import uz.mk.communicationcompanyservice.entity.enums.RoleName;
 import uz.mk.communicationcompanyservice.entity.enums.ServiceTypeName;
 import uz.mk.communicationcompanyservice.payload.ApiResponse;
 import uz.mk.communicationcompanyservice.repository.*;
 import uz.mk.communicationcompanyservice.utils.CommonUtils;
 
 import java.util.List;
+import java.util.Map;
+import java.util.Set;
 import java.util.UUID;
 
 @Service
@@ -56,6 +60,18 @@ public class UssdCodesService {
 
     @Transactional
     public ApiResponse changeTariff(Integer tariffId, UUID simcardId) {
+        Map<String, Object> contextHolder = CommonUtils.getPrincipalAndRoleFromSecurityContextHolder();
+        Set<Role> principalUserRoles = (Set<Role>) contextHolder.get("principalUserRoles");
+
+        boolean isStaffAuthority = CommonUtils.isExistsAuthority(principalUserRoles, RoleName.ROLE_STAFF);
+
+        boolean isClientAuthority = CommonUtils.isExistsAuthority(principalUserRoles, RoleName.ROLE_CLIENT);
+
+
+        if (!(isStaffAuthority || isClientAuthority)) {
+            return new ApiResponse("You don't have the authority", false);
+        }
+
         Tariff tariff = tariffRepository.findById(tariffId).get();
         Double switchCostAmount = tariff.getSwitchCost();
 
@@ -86,6 +102,17 @@ public class UssdCodesService {
 
     @Transactional
     public ApiResponse buyPackage(Integer packageId, UUID simcardId) {
+        Map<String, Object> contextHolder = CommonUtils.getPrincipalAndRoleFromSecurityContextHolder();
+        Set<Role> principalUserRoles = (Set<Role>) contextHolder.get("principalUserRoles");
+
+        boolean isStaffAuthority = CommonUtils.isExistsAuthority(principalUserRoles, RoleName.ROLE_STAFF);
+
+        boolean isClientAuthority = CommonUtils.isExistsAuthority(principalUserRoles, RoleName.ROLE_CLIENT);
+
+
+        if (!(isStaffAuthority || isClientAuthority)) {
+            return new ApiResponse("You don't have the authority", false);
+        }
 
         Package buyingPackage = packageRepository.getById(packageId);
         Simcard simcard = simcardRepository.getById(simcardId);
@@ -137,6 +164,18 @@ public class UssdCodesService {
 
     @Transactional
     public ApiResponse buyExtraService(Integer serviceId, UUID simcardId) {
+        Map<String, Object> contextHolder = CommonUtils.getPrincipalAndRoleFromSecurityContextHolder();
+        Set<Role> principalUserRoles = (Set<Role>) contextHolder.get("principalUserRoles");
+
+        boolean isStaffAuthority = CommonUtils.isExistsAuthority(principalUserRoles, RoleName.ROLE_STAFF);
+
+        boolean isClientAuthority = CommonUtils.isExistsAuthority(principalUserRoles, RoleName.ROLE_CLIENT);
+
+
+        if (!(isStaffAuthority || isClientAuthority)) {
+            return new ApiResponse("You don't have the authority", false);
+        }
+
         ExtraService extraService = extraServiceRepository.getById(serviceId);
         Simcard simcard = simcardRepository.getById(simcardId);
 
@@ -158,7 +197,6 @@ public class UssdCodesService {
 
         return new ApiResponse("Successfully bought service", true);
     }
-
 
 
 }
