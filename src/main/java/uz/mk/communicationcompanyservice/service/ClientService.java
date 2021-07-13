@@ -1,6 +1,7 @@
 package uz.mk.communicationcompanyservice.service;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import uz.mk.communicationcompanyservice.entity.*;
@@ -30,9 +31,17 @@ public class ClientService {
     @Autowired
     ClientMoveTypeRepository clientMoveTypeRepository;
 
+    public ApiResponse checkBalance() {
+        Simcard principalSimCard = (Simcard) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+        return new ApiResponse("Balance", true, principalSimCard.getBalance());
+    }
+
     @Transactional
-    public ApiResponse sendMessage(UUID simcardId, Integer numberOfSms) {
-        Optional<Simcard> optionalSimcard = simcardRepository.findById(simcardId);
+    public ApiResponse sendMessage(Integer numberOfSms) {
+        Simcard principalSimCard = (Simcard) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+        UUID simCardId = principalSimCard.getId();
+
+        Optional<Simcard> optionalSimcard = simcardRepository.findById(simCardId);
         Simcard simcard = optionalSimcard.get();
         SimcardSet simcardSet = simcard.getSimcardSet();
 
@@ -56,15 +65,18 @@ public class ClientService {
                 : (oldNumberOfSms + " SMS in limit and " + amountBalance + " sum were deducted from balance for " + Math.abs(amount) + " SMS (" + smsPrice + " sum per 1 SMS)"));
 
         ClientMoveType clientMoveType = clientMoveTypeRepository.findByName(ClientMoveTypeName.SENT_MESSAGE);
-        Detail detail = CommonUtils.createDetail("User sent message",description, clientMoveType, simcard);
+        Detail detail = CommonUtils.createDetail("User sent message", description, clientMoveType, simcard);
         detailRepository.save(detail);
 
         return new ApiResponse(description, true);
     }
 
     @Transactional
-    public ApiResponse call(UUID simcardId, Integer minutes) {
-        Optional<Simcard> optionalSimcard = simcardRepository.findById(simcardId);
+    public ApiResponse call(Integer minutes) {
+        Simcard principalSimCard = (Simcard) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+        UUID simCardId = principalSimCard.getId();
+
+        Optional<Simcard> optionalSimcard = simcardRepository.findById(simCardId);
         Simcard simcard = optionalSimcard.get();
         SimcardSet simcardSet = simcard.getSimcardSet();
         Integer oldMinutes = simcardSet.getMinute();
@@ -86,7 +98,7 @@ public class ClientService {
                 : (oldMinutes + " minutes in limit and " + amountBalance + " sum were deducted from balance for " + Math.abs(newMinutes) + " minutes (" + outgoingCallPrice + " sum per 1 Minute)"));
 
         ClientMoveType clientMoveType = clientMoveTypeRepository.findByName(ClientMoveTypeName.CALLED);
-        Detail detail = CommonUtils.createDetail("User called",description, clientMoveType, simcard);
+        Detail detail = CommonUtils.createDetail("User called", description, clientMoveType, simcard);
         detailRepository.save(detail);
 
         return new ApiResponse(description, true);
@@ -94,8 +106,11 @@ public class ClientService {
     }
 
     @Transactional
-    public ApiResponse useInternet(UUID simcardId, Double amountOfMb) {
-        Optional<Simcard> optionalSimcard = simcardRepository.findById(simcardId);
+    public ApiResponse useInternet(Double amountOfMb) {
+        Simcard principalSimCard = (Simcard) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+        UUID simCardId = principalSimCard.getId();
+
+        Optional<Simcard> optionalSimcard = simcardRepository.findById(simCardId);
         Simcard simcard = optionalSimcard.get();
         SimcardSet simcardSet = simcard.getSimcardSet();
         Double oldMb = simcardSet.getMb();
@@ -116,7 +131,7 @@ public class ClientService {
                 : (oldMb + " MB in limit and " + amountBalance + " sum were deducted from balance for " + Math.abs(newAmountMb) + " MB (" + trafficPrice + " sum per 1 MB)"));
 
         ClientMoveType clientMoveType = clientMoveTypeRepository.findByName(ClientMoveTypeName.USED_THE_INTERNET);
-        Detail detail = CommonUtils.createDetail("User used the internet",description, clientMoveType, simcard);
+        Detail detail = CommonUtils.createDetail("User used the internet", description, clientMoveType, simcard);
         detailRepository.save(detail);
 
         return new ApiResponse(description, true);

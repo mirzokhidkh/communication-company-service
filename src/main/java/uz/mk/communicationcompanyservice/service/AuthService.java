@@ -12,6 +12,7 @@ import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import uz.mk.communicationcompanyservice.entity.Role;
+import uz.mk.communicationcompanyservice.entity.Simcard;
 import uz.mk.communicationcompanyservice.entity.Turniket;
 import uz.mk.communicationcompanyservice.entity.User;
 import uz.mk.communicationcompanyservice.entity.enums.RoleName;
@@ -19,6 +20,7 @@ import uz.mk.communicationcompanyservice.payload.ApiResponse;
 import uz.mk.communicationcompanyservice.payload.LoginDto;
 import uz.mk.communicationcompanyservice.payload.RegisterDto;
 import uz.mk.communicationcompanyservice.repository.RoleRepository;
+import uz.mk.communicationcompanyservice.repository.SimcardRepository;
 import uz.mk.communicationcompanyservice.repository.UserRepository;
 import uz.mk.communicationcompanyservice.security.JwtProvider;
 import uz.mk.communicationcompanyservice.utils.CommonUtils;
@@ -40,14 +42,16 @@ public class AuthService implements UserDetailsService {
 
     final JwtProvider jwtProvider;
 
+    final SimcardRepository simcardRepository;
 
     @Autowired
-    public AuthService(@Lazy PasswordEncoder passwordEncoder, UserRepository userRepository, AuthenticationManager authenticationManager, JwtProvider jwtProvider, RoleRepository roleRepository) {
+    public AuthService(@Lazy PasswordEncoder passwordEncoder, UserRepository userRepository, AuthenticationManager authenticationManager, JwtProvider jwtProvider, RoleRepository roleRepository, SimcardRepository simcardRepository) {
         this.passwordEncoder = passwordEncoder;
         this.userRepository = userRepository;
         this.authenticationManager = authenticationManager;
         this.jwtProvider = jwtProvider;
         this.roleRepository = roleRepository;
+        this.simcardRepository = simcardRepository;
     }
 
     public ApiResponse register(RegisterDto registerDto) {
@@ -124,5 +128,18 @@ public class AuthService implements UserDetailsService {
             return optionalUser.get();
         }
         throw new UsernameNotFoundException(username + " not found");
+    }
+
+
+    public UserDetails loadSimCardBackNumberByBackNumberFromSimCard(String simCardBackNumber) {
+        return simcardRepository.findBySimCardBackNumber(simCardBackNumber)
+                .orElseThrow(() -> new UsernameNotFoundException(simCardBackNumber + " not found"));
+    }
+
+
+    public UserDetails loadUserByClientNameFromSimCard(String username) {
+        Optional<User> optionalUser = userRepository.findByUsername(username);
+        return simcardRepository.findByClient(optionalUser.get())
+                .orElseThrow(() -> new UsernameNotFoundException(username + " not found"));
     }
 }

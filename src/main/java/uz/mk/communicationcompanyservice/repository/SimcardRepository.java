@@ -4,6 +4,7 @@ import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.rest.core.annotation.RepositoryRestResource;
 import uz.mk.communicationcompanyservice.entity.Simcard;
+import uz.mk.communicationcompanyservice.entity.User;
 import uz.mk.communicationcompanyservice.payload.ServiceWithDataStatics;
 import uz.mk.communicationcompanyservice.payload.TariffWithDataStatics;
 
@@ -13,6 +14,10 @@ import java.util.UUID;
 
 @RepositoryRestResource(path = "simcard", collectionResourceRel = "list")
 public interface SimcardRepository extends JpaRepository<Simcard, UUID> {
+    Optional<Simcard> findBySimCardBackNumber(String simCardBackNumber);
+
+    Optional<Simcard> findByClient(User client);
+
     Optional<Simcard> findByClientId(UUID client_id);
 
     Simcard getByClientId(UUID client_id);
@@ -50,5 +55,7 @@ public interface SimcardRepository extends JpaRepository<Simcard, UUID> {
             "group by t.id")
     List<TariffWithDataStatics> findAllBuyingTariffs();
 
+    @Query(value = "select balance from simcard where id:?1", nativeQuery = true)
+    Double getBalance(UUID simCardId);
 
 }
