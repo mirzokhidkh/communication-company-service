@@ -38,7 +38,7 @@ public class JwtFilter extends OncePerRequestFilter {
             String username = jwtProvider.getUsernameFromToken(token);
             if (username != null) {
                 UserDetails userDetails = isClient
-                        ? authService.loadUserByClientNameFromSimCard(username)
+                        ? authService.loadClientByClientNameFromSimCard(username)
                         : authService.loadUserByUsername(username);
                 UsernamePasswordAuthenticationToken usernamePasswordAuthenticationToken =
                         new UsernamePasswordAuthenticationToken(userDetails, null, userDetails.getAuthorities());

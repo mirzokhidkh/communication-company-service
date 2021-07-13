@@ -137,7 +137,7 @@ public class AuthService implements UserDetailsService {
     }
 
 
-    public UserDetails loadUserByClientNameFromSimCard(String username) {
+    public UserDetails loadClientByClientNameFromSimCard(String username) {
         Optional<User> optionalUser = userRepository.findByUsername(username);
         return simcardRepository.findByClient(optionalUser.get())
                 .orElseThrow(() -> new UsernameNotFoundException(username + " not found"));
