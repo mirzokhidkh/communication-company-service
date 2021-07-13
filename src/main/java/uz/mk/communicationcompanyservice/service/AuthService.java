@@ -131,7 +131,7 @@ public class AuthService implements UserDetailsService {
     }
 
 
-    public UserDetails loadSimCardBackNumberByBackNumberFromSimCard(String simCardBackNumber) {
+    public UserDetails loadSimCardByBackNumberFromSimCard(String simCardBackNumber) {
         return simcardRepository.findBySimCardBackNumber(simCardBackNumber)
                 .orElseThrow(() -> new UsernameNotFoundException(simCardBackNumber + " not found"));
     }

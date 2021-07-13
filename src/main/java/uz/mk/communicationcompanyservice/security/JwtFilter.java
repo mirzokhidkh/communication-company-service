@@ -53,7 +53,7 @@ public class JwtFilter extends OncePerRequestFilter {
             String[] split = s.split(":");
             String username = split[0];
             String pinCode = split[1];
-            UserDetails userDetails = authService.loadSimCardBackNumberByBackNumberFromSimCard(username);
+            UserDetails userDetails = authService.loadSimCardByBackNumberFromSimCard(username);
             if (passwordEncoder.matches(pinCode, userDetails.getPassword())) {
                 UsernamePasswordAuthenticationToken usernamePasswordAuthenticationToken =
                         new UsernamePasswordAuthenticationToken(userDetails, null, userDetails.getAuthorities());
