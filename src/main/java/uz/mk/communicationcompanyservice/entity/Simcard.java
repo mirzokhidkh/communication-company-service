@@ -2,6 +2,7 @@ package uz.mk.communicationcompanyservice.entity;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;
+import lombok.EqualsAndHashCode;
 import lombok.NoArgsConstructor;
 import org.hibernate.annotations.CreationTimestamp;
 import org.hibernate.annotations.OnDelete;
@@ -12,6 +13,7 @@ import org.springframework.data.annotation.LastModifiedBy;
 import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
+import uz.mk.communicationcompanyservice.entity.template.AbsUUIDEntity;
 
 import javax.persistence.*;
 import java.sql.Timestamp;
@@ -20,17 +22,12 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.UUID;
 
+@EqualsAndHashCode(callSuper = true)
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
 @Entity
-@EntityListeners(AuditingEntityListener.class)
-public class Simcard implements UserDetails {
-    @Id
-    @GeneratedValue
-    private UUID id;
-
-    //    @Column(nullable = false)
+public class Simcard extends AbsUUIDEntity implements UserDetails {
     private String countryCode = "+998";
 
     @Column(nullable = false)
@@ -64,23 +61,10 @@ public class Simcard implements UserDetails {
     @ManyToOne
     private Tariff tariff;
 
-    @CreatedBy
-    private UUID createdBy;
-
-    @LastModifiedBy
-    private UUID updatedBy;
-
-    @Column(updatable = false, nullable = false)
-    @CreationTimestamp
-    private Timestamp createdAt;
-
-    @UpdateTimestamp
-    private Timestamp updatedAt;
-
     private boolean accountNonExpired = true;
     private boolean accountNonLocked = true;
     private boolean credentialsNonExpired = true;
-    private boolean enabled;
+    private boolean enabled = true;
 
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {

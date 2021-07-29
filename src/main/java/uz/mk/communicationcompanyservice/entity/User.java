@@ -1,38 +1,26 @@
 package uz.mk.communicationcompanyservice.entity;
 
-import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import lombok.AllArgsConstructor;
 import lombok.Data;
+import lombok.EqualsAndHashCode;
 import lombok.NoArgsConstructor;
-import org.hibernate.annotations.CreationTimestamp;
-import org.hibernate.annotations.UpdateTimestamp;
-import org.springframework.data.annotation.CreatedBy;
-import org.springframework.data.annotation.LastModifiedBy;
-import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
+import uz.mk.communicationcompanyservice.entity.template.AbsUUIDEntity;
 
 import javax.persistence.*;
-import java.sql.Timestamp;
 import java.util.Collection;
 import java.util.List;
 import java.util.Set;
-import java.util.UUID;
 
+@EqualsAndHashCode(callSuper = true)
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
 @Entity(name = "users")
-@EntityListeners(AuditingEntityListener.class)
-//@JsonIgnoreProperties({"hibernateLazyInitializer", "handler"})
-//@JsonIgnoreProperties({"turniket","simcard"})
-public class User implements UserDetails {
-
-    @Id
-    @GeneratedValue
-    private UUID id;
-
+@JsonIgnoreProperties({"turniket","simcard"})
+public class User extends AbsUUIDEntity implements UserDetails {
     @Column(nullable = false)
     private String firstname;
 
@@ -53,13 +41,11 @@ public class User implements UserDetails {
     private Set<Role> role;
 
 
+
     @OneToOne(mappedBy = "staff", cascade = {CascadeType.ALL}, fetch = FetchType.LAZY)
-    @JsonIgnore
     private Turniket turniket;
 
-
     @OneToMany(mappedBy = "client", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
-    @JsonIgnore
     private List<Simcard> simcard;
 
     public User(String firstname, String lastname, String username, String password) {
@@ -68,19 +54,6 @@ public class User implements UserDetails {
         this.username = username;
         this.password = password;
     }
-
-    @CreatedBy
-    private UUID createdBy;
-
-    @LastModifiedBy
-    private UUID updatedBy;
-
-    @Column(updatable = false)
-    @CreationTimestamp
-    private Timestamp createdAt;
-
-    @UpdateTimestamp
-    private Timestamp updatedAt;
 
     private boolean accountNonExpired = true;
     private boolean accountNonLocked = true;

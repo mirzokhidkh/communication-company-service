@@ -2,25 +2,23 @@ package uz.mk.communicationcompanyservice.entity;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;
+import lombok.EqualsAndHashCode;
 import lombok.NoArgsConstructor;
 import org.springframework.data.annotation.CreatedBy;
 import org.springframework.data.annotation.LastModifiedBy;
 import org.springframework.data.jpa.domain.support.AuditingEntityListener;
+import uz.mk.communicationcompanyservice.entity.template.AbsIntegerEntity;
 
 import javax.persistence.*;
 import java.sql.Date;
 import java.util.UUID;
 
+@EqualsAndHashCode(callSuper = true)
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
 @Entity
-@EntityListeners(AuditingEntityListener.class)
-public class Package {
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Integer id;
-
+public class Package extends AbsIntegerEntity {
     @Column(nullable = false)
     private String name;
 
@@ -36,10 +34,4 @@ public class Package {
 
     @ManyToOne
     private ServiceType serviceType;
-
-    @CreatedBy
-    private UUID createdBy;
-
-    @LastModifiedBy
-    private UUID updatedBy;
 }

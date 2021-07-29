@@ -107,11 +107,11 @@ public class AuthService implements UserDetailsService {
     public ApiResponse login(LoginDto loginDto) {
         try {
             Authentication authentication = authenticationManager.authenticate(new UsernamePasswordAuthenticationToken(
-                    loginDto.getUsername(),
+                    loginDto.getEmail(),
                     loginDto.getPassword()
             ));
             User user = (User) authentication.getPrincipal();
-            String token = jwtProvider.generateToken(loginDto.getUsername(), user.getRole());
+            String token = jwtProvider.generateToken(loginDto.getEmail(), user.getRole());
             return new ApiResponse("Token", true, token);
 
         } catch (BadCredentialsException badCredentialsException) {

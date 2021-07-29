@@ -2,24 +2,23 @@ package uz.mk.communicationcompanyservice.entity;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;
+import lombok.EqualsAndHashCode;
 import lombok.NoArgsConstructor;
 import org.hibernate.annotations.CreationTimestamp;
 import org.hibernate.annotations.UpdateTimestamp;
+import uz.mk.communicationcompanyservice.entity.template.AbsUUIDEntity;
 
 import javax.persistence.*;
 import java.sql.Date;
 import java.sql.Timestamp;
 import java.util.UUID;
 
+@EqualsAndHashCode(callSuper = true)
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
 @Entity
-public class Detail {
-    @Id
-    @GeneratedValue
-    private UUID id;
-
+public class Detail extends AbsUUIDEntity {
     @Column(nullable = false)
     private String name;
 

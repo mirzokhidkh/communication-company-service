@@ -20,9 +20,9 @@ import uz.mk.communicationcompanyservice.service.AuthService;
 @EnableWebSecurity
 public class SecurityConfig extends WebSecurityConfigurerAdapter {
 
-    final JwtFilter jwtFilter;
+    private final JwtFilter jwtFilter;
 
-    final AuthService authService;
+    private final AuthService authService;
 
     public SecurityConfig(@Lazy AuthService authService, JwtFilter jwtFilter) {
         this.authService = authService;
